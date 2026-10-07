@@ -7,6 +7,9 @@ const Header = async() => {
         dateStyle: "full",
     });
     const res = await fetch('https://news-api-v2.vercel.app/api/categories')
+    if (!res.ok) {
+        throw new Error("Failed to fetch categories");
+    }
     const data = await res.json()
     const navData = data.data;
     // console.log(navData);
