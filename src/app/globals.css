@@ -1,4 +1,6 @@
 @import "tailwindcss";
+@plugin "daisyui";
+@import "@heroui/styles"; 
 
 :root {
   --background: #ffffff;
