@@ -3,6 +3,7 @@ import "./globals.css";
 import { ToastContainer } from "react-toastify";
 import Header from "../components/header/header";
 import Footer from "../components/footer/footer";
+import Marquee from "../components/news/marquee";
 
 const notoSerifBengali = Noto_Serif_Bengali({
   subsets: ["latin", "bengali"],
@@ -24,7 +25,12 @@ export default function RootLayout({ children }) {
       <body className="min-h-full flex flex-col">
         <main>
           <Header />
-          {children}
+          <main>
+            <div className="bg-[#C40004] text-white">
+              <Marquee />
+            </div>
+            {children}
+          </main>
           <Footer />
           <ToastContainer />
         </main>
