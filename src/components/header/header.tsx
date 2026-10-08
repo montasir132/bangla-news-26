@@ -14,54 +14,54 @@ const Header = async() => {
     const navData = data.data;
     // console.log(navData);
     return (
-        <header className="container mx-auto mt-4 mb-8 px-4 text-[#171717]">
-            <section className="relative flex items-center justify-between min-h-16">
-                {/* Logo + Brand - Center */}
-                <div className="absolute left-1/2 -translate-x-1/2">
-                    <Link
-                        href="/"
-                        className="flex items-center gap-2">
-                        <Image
-                        className="w-10 h-10 object-contain"
-                        width={50}
-                        height={50}
-                        alt="Bangla News 26"
-                        src="/logo.webp"
-                        />
-                        <div>
-                            <h1 className="text-[#C40004] text-xl md:text-2xl font-bold leading-tight">
-                                Bangla News 26
-                            </h1>
+        <header className="container mx-auto mb-6 mt-2 px-4 text-[#171717]">
+            <section className="grid grid-cols-[1fr_auto] items-center gap-3 py-3 md:grid-cols-3">
+                <div className="hidden text-sm text-[#737373] md:block">{date}</div>
 
-                            <p className="text-[#737373] text-xs md:text-sm">
-                                {date}
-                            </p>
-                        </div>
-                    </Link>
+                {/* লোগো + ব্র্যান্ড */}
+                <Link
+                href="/"
+                className="flex min-w-0 items-center gap-2 md:justify-center"
+                >
+                <Image
+                    className="h-10 w-10 shrink-0 object-contain sm:h-12 sm:w-12"
+                    width={50}
+                    height={50}
+                    alt="Bangla News 26"
+                    src="/logo.webp"
+                    priority
+                />
+                <div className="min-w-0">
+                    <h1 className="truncate text-lg font-bold leading-tight text-[#C40004] sm:text-2xl">
+                    Bangla News 26
+                    </h1>
+                    {/* মোবাইলে তারিখ এখানে */}
+                    <p className="truncate text-[11px] text-[#737373] sm:text-xs md:hidden">
+                    {date}
+                    </p>
                 </div>
+                </Link>
 
-                {/* Sign In / Sign Up - Right */}
-                <div className="ml-auto flex items-center gap-1 sm:gap-2">
+                {/* ডান পাশ: সাইন ইন / সাইন আপ */}
+                <div className="flex items-center justify-end gap-1 sm:gap-2">
                 <button
-                    className="btn btn-sm sm:btn-md bg-white border border-transparent
-                    hover:border-[#C40004] hover:text-[#C40004]
-                    text-[#404040]"
                     type="button"
+                    className="btn btn-sm border border-transparent bg-white text-[#404040] hover:border-[#C40004] hover:bg-white hover:text-[#C40004] sm:btn-md"
                 >
                     সাইন ইন
                 </button>
-
                 <button
-                    className="btn btn-sm sm:btn-md
-                    bg-[#C40004] text-white border-[#C40004]
-                    hover:bg-[#a90000]"
                     type="button"
+                    className="btn btn-sm border-[#C40004] bg-[#C40004] text-white shadow-sm hover:border-[#a90000] hover:bg-[#a90000] sm:btn-md"
                 >
                     সাইন আপ
                 </button>
                 </div>
             </section>
-            <NavigationBar navData = {navData}/>
+
+            <div className="h-0.5 w-full bg-linear-to-r from-transparent via-[#C40004] to-transparent" />
+
+            <NavigationBar navData={navData} />
         </header>
     );
 };
