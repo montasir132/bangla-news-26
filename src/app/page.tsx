@@ -20,11 +20,8 @@ export default async function Home() {
               <MainNews news={mainNews} />
               <div className="grid, gap-5 mt-5">
                 {otherSection.map((os: otherSection) => (
-                  <div
-                    className=""
-                    key={os.curationId}
-                  >
-                    <h1 className="font-bold text-xl border-b-3 border-[#C40004] pb-1 mt-3">{os.title}</h1>
+                  <div key={os.curationId}>
+                    <h1 className="font-bold text-xl border-b-3 border-[#C40004] pb-2 mb-7 mt-3">{os.title}</h1>
                     <div className="grid lg:grid-cols-3 gap-4">
                     {Array.isArray(os.articles) &&
                       os.articles.map((news: sectionsMainNews) => (
