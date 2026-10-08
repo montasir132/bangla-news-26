@@ -13,7 +13,7 @@ const NavigationBar =({ navData }: NavigationBarProps) => {
         <nav className="flex justify-center mt-6 mb-3 items-center gap-5">
             <Link className={`link ${pathname === '/' ? 'text-[#C40004]' : ''}`} href='/'>হোম</Link>
             {
-                activeNavLinks.map((n, i:number)=><Link key={i} className={`link ${pathname ===`${n.slug}` ? 'text-[#C40004]' : ''}`} href={`/categories/${n.slug}`}>{n.title}</Link>)
+                activeNavLinks.map((n, i:number)=><Link key={i} className={`link ${pathname ===`/categories/${n.slug}` ? 'text-[#C40004]' : ''}`} href={`/categories/${n.slug}`}>{n.title}</Link>)
             }
         </nav>
     );
