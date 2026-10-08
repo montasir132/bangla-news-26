@@ -1,9 +1,5 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import React from 'react';
-interface mainNewsProps{
-    news: sectionsMainNews[]
-}
 const MainNews = ({news}) => {
     // console.log(news);
     const [firstNews, ...otherNews] = news
@@ -11,7 +7,7 @@ const MainNews = ({news}) => {
     // const otherNews = news.slice(1)
     const {} = otherNews
     return (
-        <section className="flex gap-2">
+        <section className="lg:flex lg:gap-2">
             <Link href={`/news/${id}`}>
                 <div className="card bg-base-100 w-96 shadow-sm">
                     <figure>
@@ -28,12 +24,13 @@ const MainNews = ({news}) => {
                 
                 {
                     otherNews.slice(0,4).map((n:sectionsMainNews) => 
-                    <div key={n.id} className='card bg-base-100 border border-gray-300 p-3'>
-                        <Link href={`/news/${n.id}`}>
-                            <small className='text-[#a90305]  font-semibold'>{n.category}</small>
-                            <div>{n.title}</div>
-                        </Link>
-                    </div>)
+                            <div key={n.id} className='card bg-base-100 border border-gray-300 p-3'>
+                                <Link key={n.id} href={`/news/${n.id}`}>
+                                <small className='text-[#a90305]  font-semibold'>{n.category}</small>
+                                <div>{n.title}</div>
+                                </Link>
+                            </div>
+                    )
                 }
             </div>
         </section>
