@@ -3,7 +3,7 @@ import MostReadNews from "../components/news/mostReadNews";
 import NewsCard from "../components/news/newsCard";
 
 export default async function Home() {
-  const res = await fetch("https://news-api-v2.vercel.app/api/news/sections");
+  const res = await fetch("https://news-api-v2.vercel.app/api/news/sections",{next: { revalidate: 60 }});
   const data = await res.json();
   const sections = data.data;
   // console.log(sections);

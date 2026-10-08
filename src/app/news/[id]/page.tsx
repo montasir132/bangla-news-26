@@ -2,7 +2,7 @@ import Image from "next/image";
 
 const page = async({params}) => {
     const {id} = await params;
-    const res = await fetch(`https://news-api-v2.vercel.app/api/article/${id}`)
+    const res = await fetch(`https://news-api-v2.vercel.app/api/article/${id}`,{next: { revalidate: 60 }})
     const data = await res.json()
     // console.log(data);
     const news = data.data;

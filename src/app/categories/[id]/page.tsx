@@ -2,7 +2,7 @@ import NewsCard from "../../../components/news/newsCard";
 
 const page = async({params}) => {
     const {id}= await params
-    const res = await fetch(`https://news-api-v2.vercel.app/api/category/${id}`)
+    const res = await fetch(`https://news-api-v2.vercel.app/api/category/${id}`,{next: { revalidate: 60 }})
     const data = await res.json() 
     const categoryNews = data.data
     // console.log(id);

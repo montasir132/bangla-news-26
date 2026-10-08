@@ -9,7 +9,7 @@ const Marquee = async() => {
     const date = new Date().toLocaleDateString("bn-BD", {
         dateStyle: "full",
     });
-    const res = await fetch('https://news-api-v2.vercel.app/api/news?limit=20')
+    const res = await fetch('https://news-api-v2.vercel.app/api/news?limit=20',{next: { revalidate: 60 }})
     if (!res.ok) {
         throw new Error("Failed to fetch categories");
     }
