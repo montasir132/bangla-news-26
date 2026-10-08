@@ -5,12 +5,13 @@ import Header from "../components/header/header";
 import Footer from "../components/footer/footer";
 
 const notoSerifBengali = Noto_Serif_Bengali({
-  subsets: ["latin","bengali"],
+  subsets: ["latin", "bengali"],
 });
 
 export const metadata = {
   title: "Bangla News 26",
-  description: "a digital news and media descriptor generally referring to real-time, 24/7 Bengali news updates, headlines, and portal services focusing on current affairs in Bangladesh.",
+  description:
+    "a digital news and media descriptor generally referring to real-time, 24/7 Bengali news updates, headlines, and portal services focusing on current affairs in Bangladesh.",
 };
 
 export default function RootLayout({ children }) {
@@ -22,9 +23,9 @@ export default function RootLayout({ children }) {
     >
       <body className="min-h-full flex flex-col">
         <main>
-          <Header/>
+          <Header />
           {children}
-          <Footer/>
+          <Footer />
           <ToastContainer />
         </main>
       </body>
