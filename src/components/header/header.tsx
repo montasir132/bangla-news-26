@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import NavigationBar from "./navbar";
+import UserInfo from "./userInfo";
 
 const Header = async() => {
     const date = new Date().toLocaleDateString("bn-BD", {
@@ -43,24 +44,10 @@ const Header = async() => {
                 </Link>
 
                 {/* ডান পাশ: সাইন ইন / সাইন আপ */}
-                <div className="flex items-center justify-end gap-1 sm:gap-2">
-                <button
-                    type="button"
-                    className="btn btn-sm border border-transparent bg-white text-[#404040] hover:border-[#C40004] hover:bg-white hover:text-[#C40004] sm:btn-md"
-                >
-                    সাইন ইন
-                </button>
-                <button
-                    type="button"
-                    className="btn btn-sm border-[#C40004] bg-[#C40004] text-white shadow-sm hover:border-[#a90000] hover:bg-[#a90000] sm:btn-md"
-                >
-                    সাইন আপ
-                </button>
-                </div>
+                <UserInfo/>
             </section>
 
             <div className="h-0.5 w-full bg-linear-to-r from-transparent via-[#C40004] to-transparent" />
-
             <NavigationBar navData={navData} />
         </header>
     );
