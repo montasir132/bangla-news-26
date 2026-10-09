@@ -47,7 +47,6 @@ export default function SignInPage() {
             });
         }
     };
-
     const [preview, setPreview] = useState<string | null>(null);
     const [showPassword, setShowPassword] = useState(false);
     useEffect(() => {
@@ -55,16 +54,31 @@ export default function SignInPage() {
         if (preview) URL.revokeObjectURL(preview);
         };
     }, [preview]);
+
+    const handleGoogleSignIn = async() => {
+        const data = await signIn.social({
+        provider: "google",
+        callbackURL: "/",
+    });
+
+    }
+    const handleGithubSignIn = async() => {
+        const data = await signIn.social({
+        provider: "github",
+        callbackURL: "/",
+    });
+
+    }
     return (
         <section className="mx-auto flex min-h-[calc(100vh-8rem)] w-full items-center justify-center px-4 py-10 sm:py-16">
                     <div className="w-full max-w-md rounded-2xl border border-gray-200 bg-white p-6 shadow-lg sm:p-8">
                         <div className="mb-8 text-center">
-                        <h2 className="text-2xl font-bold text-[#C40004] sm:text-3xl">
-                            সাইন ইন
-                        </h2>
-                        <p className="mt-2 text-sm text-gray-500">
-                            নতুন অ্যাকাউন্ট তৈরি করতে তথ্য দিন
-                        </p>
+                            <h2 className="text-2xl font-bold text-[#C40004] sm:text-3xl">
+                                সাইন ইন
+                            </h2>
+                            <p className="mt-2 text-sm text-gray-500">
+                                নতুন অ্যাকাউন্ট তৈরি করতে তথ্য দিন
+                            </p>
                         </div>
         
                         <Form
@@ -161,6 +175,8 @@ export default function SignInPage() {
                             </a>
                         </p>
                         </Form>
+                        <button onClick={handleGoogleSignIn} className="btn">Google Sign-In</button>
+                        <button onClick={handleGithubSignIn} className="btn">Github Sign-In</button>
                     </div>
                 </section>
     );
