@@ -161,7 +161,7 @@ export default function SignInPage() {
                             className="w-full bg-[#C40004] text-white hover:bg-[#a90000] sm:flex-1"
                             >
                             <Check />
-                            সাইন আপ
+                            সাইন ইন
                             </Button>
                             <Button type="reset" variant="secondary" className="w-full sm:w-auto">
                             রিসেট
@@ -169,9 +169,9 @@ export default function SignInPage() {
                         </div>
         
                         <p className="text-center text-sm text-gray-500">
-                            আগেই অ্যাকাউন্ট আছে?{" "}
+                            আগেই অ্যাকাউন্ট না থাকলে?{" "}
                             <a href="/signUp"className="font-semibold text-[#C40004] hover:underline">
-                            সাইন ইন করুন
+                            সাইন আপ করুন
                             </a>
                         </p>
                         </Form>
