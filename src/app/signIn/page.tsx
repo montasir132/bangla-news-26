@@ -20,7 +20,7 @@ export default function SignInPage() {
         })
         if(data){
             console.log(data);
-            toast.success('Signed up successfully.', {
+            toast.success('Signed In successfully.', {
                 position: "bottom-right",
                 autoClose: 5000,
                 hideProgressBar: false,
@@ -34,7 +34,7 @@ export default function SignInPage() {
             redirect('/');
         }else{
             console.log(error);
-            toast.error('This Gmail account is already signed up; please try sign in.', {
+            toast.error('This Gmail account is not hear ; please signed up.', {
                 position: "bottom-right",
                 autoClose: 5000,
                 hideProgressBar: false,
@@ -55,20 +55,39 @@ export default function SignInPage() {
         };
     }, [preview]);
 
-    const handleGoogleSignIn = async() => {
-        const data = await signIn.social({
-        provider: "google",
-        callbackURL: "/",
-    });
+    const handleGoogleSignIn = async () => {
+        try {
+            const { data, error } = await signIn.social({
+            provider: "google",
+            callbackURL: "/",
+            });
 
-    }
-    const handleGithubSignIn = async() => {
-        const data = await signIn.social({
-        provider: "github",
-        callbackURL: "/",
-    });
+            if (error) {
+            console.error("Google sign-in error:", error);
+            toast.error(error.message || "Google sign-in failed");
+            }
+        } catch (err) {
+            console.error("Google sign-in exception:", err);
+            toast.error("Google sign-in করতে সমস্যা হয়েছে");
+        }
+    };
+    
+    const handleGithubSignIn = async () => {
+        try {
+            const { error } = await signIn.social({
+            provider: "github",
+            callbackURL: "/",
+            });
 
-    }
+            if (error) {
+            console.error("GitHub sign-in error:", error);
+            toast.error(error.message || "GitHub দিয়ে সাইন ইন করা যায়নি");
+            }
+        } catch (err) {
+            console.error("GitHub sign-in exception:", err);
+            toast.error("GitHub authentication-এ সমস্যা হয়েছে");
+        }
+    };
     return (
         <section className="mx-auto flex min-h-[calc(100vh-8rem)] w-full items-center justify-center px-4 py-10 sm:py-16">
                     <div className="w-full max-w-md rounded-2xl border border-gray-200 bg-white p-6 shadow-lg sm:p-8">

@@ -33,6 +33,7 @@ export default function SignUpPage() {
     setImageError(null);
     if (fileRef.current) fileRef.current.value = "";
   };
+
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return clearImage();
@@ -92,18 +93,39 @@ export default function SignUpPage() {
         },
       );
     }
-};
+  };
+
     const handleGoogleSignUp = async () => {
-        await signIn.social({
-        provider: "google",
-        callbackURL: "/",
+      try {
+        const { error } = await signIn.social({
+          provider: "google",
+          callbackURL: "/",
         });
+
+        if (error) {
+          console.error("Google sign-up error:", error);
+          toast.error(error.message || "Google দিয়ে সাইন আপ করা যায়নি");
+        }
+      } catch (err) {
+        console.error("Google sign-up exception:", err);
+        toast.error("Google authentication-এ সমস্যা হয়েছে");
+      }
     };
     const handleGithubSignUp = async () => {
-        await signIn.social({
-        provider: "github",
-        callbackURL: "/",
+      try {
+        const { error } = await signIn.social({
+          provider: "github",
+          callbackURL: "/",
         });
+
+        if (error) {
+          console.error("GitHub sign-up error:", error);
+          toast.error(error.message || "GitHub দিয়ে সাইন আপ করা যায়নি");
+        }
+      } catch (err) {
+        console.error("GitHub sign-up exception:", err);
+        toast.error("GitHub authentication-এ সমস্যা হয়েছে");
+      }
     };
 
   return (
