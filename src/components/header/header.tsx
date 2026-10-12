@@ -7,7 +7,7 @@ const Header = async() => {
     const date = new Date().toLocaleDateString("bn-BD", {
         dateStyle: "full",
     });
-    const res = await fetch('https://news-api-v2.vercel.app/api/categories')
+    const res = await fetch(process.env.NEXT_PUBLIC_NEWS_CATEGORIES_API)
     if (!res.ok) {
         throw new Error("Failed to fetch categories");
     }

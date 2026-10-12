@@ -2,24 +2,24 @@ import Image from "next/image";
 
 const page = async({params}) => {
     const {id} = await params;
-    const res = await fetch(`https://news-api-v2.vercel.app/api/article/${id}`,{next: { revalidate: 60 }})
+    const res = await fetch(`${process.env.NEXT_PUBLIC_NEWS_ARTICLE_API}/${id}`,{next: { revalidate: 60 }})
     const data = await res.json()
     // console.log(data);
     const news = data.data;
-    console.log(news);
+    // console.log(news);
     return (
         <article className="max-w-4xl mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold mb-4">{news.title}</h1>
+        <h1 className="text-3xl font-bold mb-4">{news?.title}</h1>
         <p className="text-sm text-gray-500 mb-6">
-            {news.source} •{" "}
-            {new Date(news.firstPublished).toLocaleDateString("bn-BD", {
+            {news?.source} •{" "}
+            {new Date(news?.firstPublished).toLocaleDateString("bn-BD", {
             year: "numeric",
             month: "long",
             day: "numeric",
             })}
         </p>
 
-        {news.body.map((block, index) => {
+        {news?.body?.map((block, index) => {
             switch (block.type) {
             case "image":
                 return (
@@ -42,7 +42,7 @@ const page = async({params}) => {
             case "subheading":
                 return (
                 <h2 key={index} className="text-2xl font-semibold mt-8 mb-3">
-                    {block.text}
+                    {block?.text}
                 </h2>
                 );
 
@@ -59,7 +59,7 @@ const page = async({params}) => {
         })}
 
         <div className="flex flex-wrap gap-2 mt-8">
-            {news.tags?.map((tag) => (
+            {news?.tags?.map((tag) => (
             <span key={tag} className="bg-gray-100 px-3 py-1 rounded-full text-sm">
                 {tag}
             </span>

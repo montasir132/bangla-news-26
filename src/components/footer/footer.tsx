@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 const Footer = async () => {
     const res = await fetch(
-        "https://news-api-v2.vercel.app/api/categories"
+        process.env.NEXT_PUBLIC_NEWS_CATEGORIES_API
     );
 
     if (!res.ok) {
