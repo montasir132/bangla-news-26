@@ -1,202 +1,287 @@
+
 "use client";
 
-import {Check} from "@gravity-ui/icons";
-
-import {Button, Description, FieldError, Form, Input, Label, TextField} from "@heroui/react";
-import { redirect } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState, type FormEvent } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { FiEye, FiEyeOff, FiLock, FiMail } from "react-icons/fi";
+import { FcGoogle } from "react-icons/fc";
+import { FaGithub } from "react-icons/fa";
 import { Bounce, toast } from "react-toastify";
 import { signIn } from "../../lib/auth-client";
 
 export default function SignInPage() {
-    const onSubmit = async(e: React.SubmitEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        const formData = new FormData(e.currentTarget);
-        const user: Record<string, FormDataEntryValue> = Object.fromEntries(formData.entries()) as {name : string, email:string, image:string, password:string};
-        // console.log(user);
-        const { data, error } = await signIn.email({
-            ...user,
-            callbackURL: "/"
-        })
-        if(data){
-            console.log(data);
-            toast.success('Signed In successfully.', {
-                position: "bottom-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: false,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "colored",
-                transition: Bounce,
-            });
-            redirect('/');
-        }else{
-            console.log(error);
-            toast.error('This Gmail account is not hear ; please signed up.', {
-                position: "bottom-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: false,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "colored",
-                transition: Bounce,
-            });
-        }
-    };
-    const [preview, setPreview] = useState<string | null>(null);
-    const [showPassword, setShowPassword] = useState(false);
-    useEffect(() => {
-        return () => {
-        if (preview) URL.revokeObjectURL(preview);
-        };
-    }, [preview]);
+  const router = useRouter();
 
-    const handleGoogleSignIn = async () => {
-        try {
-            const { data, error } = await signIn.social({
-            provider: "google",
-            callbackURL: "/",
-            });
+  const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [socialLoading, setSocialLoading] = useState<
+    "google" | "github" | null
+  >(null);
 
-            if (error) {
-            console.error("Google sign-in error:", error);
-            toast.error(error.message || "Google sign-in failed");
-            }
-        } catch (err) {
-            console.error("Google sign-in exception:", err);
-            toast.error("Google sign-in করতে সমস্যা হয়েছে");
-        }
-    };
-    
-    const handleGithubSignIn = async () => {
-        try {
-            const { error } = await signIn.social({
-            provider: "github",
-            callbackURL: "/",
-            });
+  const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
 
-            if (error) {
-            console.error("GitHub sign-in error:", error);
-            toast.error(error.message || "GitHub দিয়ে সাইন ইন করা যায়নি");
-            }
-        } catch (err) {
-            console.error("GitHub sign-in exception:", err);
-            toast.error("GitHub authentication-এ সমস্যা হয়েছে");
+    if (loading) return;
+
+    const formData = new FormData(e.currentTarget);
+    const email = String(formData.get("email") ?? "").trim();
+    const password = String(formData.get("password") ?? "");
+
+    setLoading(true);
+
+    try {
+      const { error } = await signIn.email({
+        email,
+        password,
+        rememberMe: true,
+        callbackURL: "/",
+      });
+
+      if (error) {
+        toast.error(error.message || "ইমেইল অথবা পাসওয়ার্ড সঠিক নয়।", {
+          position: "bottom-right",
+          transition: Bounce,
+          theme: "colored",
+        });
+        return;
+      }
+
+      toast.success("সফলভাবে লগইন হয়েছে!", {
+        position: "bottom-right",
+        transition: Bounce,
+        theme: "colored",
+      });
+
+      router.replace("/");
+      router.refresh();
+    } catch {
+      toast.error("লগইন করতে সমস্যা হয়েছে। আবার চেষ্টা করুন।", {
+        position: "bottom-right",
+        transition: Bounce,
+        theme: "colored",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSocialSignIn = async (
+    provider: "google" | "github"
+  ) => {
+    if (socialLoading) return;
+
+    setSocialLoading(provider);
+
+    try {
+      const { error } = await signIn.social({
+        provider,
+        callbackURL: "/",
+      });
+
+      if (error) {
+        toast.error(error.message || "সাইন ইন করা যায়নি।", {
+          position: "bottom-right",
+          transition: Bounce,
+          theme: "colored",
+        });
+        setSocialLoading(null);
+      }
+    } catch {
+      toast.error("সাইন ইন করতে সমস্যা হয়েছে।", {
+        position: "bottom-right",
+        transition: Bounce,
+        theme: "colored",
+      });
+      setSocialLoading(null);
+    }
+  };
+
+  return (
+    <main className="relative flex min-h-[calc(100vh-4rem)] items-center justify-center overflow-hidden bg-slate-50 px-4 py-10 sm:px-6">
+      {/* Background decoration */}
+      <div className="pointer-events-none absolute -left-24 top-10 h-64 w-64 rounded-full bg-red-200/40 blur-3xl" />
+      <div className="pointer-events-none absolute -right-24 bottom-10 h-72 w-72 rounded-full bg-rose-200/40 blur-3xl" />
+
+      <section className="animate-[fadeIn_0.5s_ease-out] relative w-full max-w-md rounded-3xl border border-white bg-white/95 p-6 shadow-xl shadow-slate-200/70 backdrop-blur sm:p-9">
+        {/* Header */}
+        <div className="mb-8 text-center">
+          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-[#C40004] text-2xl font-extrabold text-white shadow-lg shadow-red-200">
+            N
+          </div>
+
+          <h1 className="text-3xl font-extrabold tracking-tight text-slate-900">
+            স্বাগতম!
+          </h1>
+
+          <p className="mt-2 text-sm leading-6 text-slate-500">
+            আপনার অ্যাকাউন্টে প্রবেশ করতে লগইন করুন।
+          </p>
+        </div>
+
+        {/* Email & password */}
+        <form onSubmit={onSubmit} className="space-y-5">
+          <div>
+            <label
+              htmlFor="email"
+              className="mb-2 block text-sm font-semibold text-slate-700"
+            >
+              ইমেইল ঠিকানা
+            </label>
+
+            <div className="relative">
+              <FiMail className="absolute left-4 top-1/2 -translate-y-1/2 text-lg text-slate-400" />
+
+              <input
+                id="email"
+                name="email"
+                type="email"
+                autoComplete="email"
+                placeholder="you@example.com"
+                required
+                className="h-12 w-full rounded-xl border border-slate-200 bg-slate-50 pl-11 pr-4 text-sm text-slate-800 outline-none transition placeholder:text-slate-400 hover:border-slate-300 focus:border-[#C40004] focus:bg-white focus:ring-4 focus:ring-red-100"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label
+              htmlFor="password"
+              className="mb-2 block text-sm font-semibold text-slate-700"
+            >
+              পাসওয়ার্ড
+            </label>
+
+            <div className="relative">
+              <FiLock className="absolute left-4 top-1/2 -translate-y-1/2 text-lg text-slate-400" />
+
+              <input
+                id="password"
+                name="password"
+                type={showPassword ? "text" : "password"}
+                autoComplete="current-password"
+                placeholder="আপনার পাসওয়ার্ড লিখুন"
+                required
+                className="h-12 w-full rounded-xl border border-slate-200 bg-slate-50 pl-11 pr-12 text-sm text-slate-800 outline-none transition placeholder:text-slate-400 hover:border-slate-300 focus:border-[#C40004] focus:bg-white focus:ring-4 focus:ring-red-100"
+              />
+
+              <button
+                type="button"
+                onClick={() => setShowPassword((prev) => !prev)}
+                aria-label={
+                  showPassword ? "পাসওয়ার্ড লুকান" : "পাসওয়ার্ড দেখুন"
+                }
+                className="absolute right-3 top-1/2 -translate-y-1/2 rounded-lg p-2 text-slate-400 transition hover:bg-red-50 hover:text-[#C40004]"
+              >
+                {showPassword ? <FiEyeOff /> : <FiEye />}
+              </button>
+            </div>
+
+            <div className="mt-2 text-right">
+              <Link
+                href="/forgot-password"
+                className="text-xs font-medium text-[#C40004] transition hover:underline"
+              >
+                পাসওয়ার্ড ভুলে গেছেন?
+              </Link>
+            </div>
+          </div>
+
+          <button
+            type="submit"
+            disabled={loading || !!socialLoading}
+            className="group flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-[#C40004] px-4 text-sm font-bold text-white shadow-lg shadow-red-200 transition duration-200 hover:-translate-y-0.5 hover:bg-[#a90000] hover:shadow-xl active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            {loading ? (
+              <>
+                <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white" />
+                লগইন হচ্ছে...
+              </>
+            ) : (
+              <>
+                সাইন ইন করুন
+                <span className="transition-transform duration-200 group-hover:translate-x-1">
+                  →
+                </span>
+              </>
+            )}
+          </button>
+        </form>
+
+        {/* Divider */}
+        <div className="my-6 flex items-center gap-4">
+          <div className="h-px flex-1 bg-slate-200" />
+          <span className="text-xs font-medium text-slate-400">
+            অথবা ব্যবহার করুন
+          </span>
+          <div className="h-px flex-1 bg-slate-200" />
+        </div>
+
+        {/* Social login */}
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+          <button
+            type="button"
+            onClick={() => handleSocialSignIn("google")}
+            disabled={!!socialLoading || loading}
+            className="flex h-12 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-3 text-sm font-semibold text-slate-700 transition duration-200 hover:-translate-y-0.5 hover:border-slate-300 hover:bg-slate-50 hover:shadow-md disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            {socialLoading === "google" ? (
+              <span className="h-4 w-4 animate-spin rounded-full border-2 border-slate-300 border-t-[#C40004]" />
+            ) : (
+              <FcGoogle className="text-xl" />
+            )}
+            Google
+          </button>
+
+          <button
+            type="button"
+            onClick={() => handleSocialSignIn("github")}
+            disabled={!!socialLoading || loading}
+            className="flex h-12 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-3 text-sm font-semibold text-slate-700 transition duration-200 hover:-translate-y-0.5 hover:border-slate-300 hover:bg-slate-50 hover:shadow-md disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            {socialLoading === "github" ? (
+              <span className="h-4 w-4 animate-spin rounded-full border-2 border-slate-300 border-t-[#C40004]" />
+            ) : (
+              <FaGithub className="text-xl text-slate-900" />
+            )}
+            GitHub
+          </button>
+        </div>
+
+        {/* Signup link */}
+        <p className="mt-7 text-center text-sm text-slate-500">
+          নতুন ব্যবহারকারী?{" "}
+          <Link
+            href="/sign-up"
+            className="font-bold text-[#C40004] transition hover:underline"
+          >
+            অ্যাকাউন্ট তৈরি করুন
+          </Link>
+        </p>
+
+        <p className="mt-6 border-t border-slate-100 pt-5 text-center text-xs text-slate-400">
+          নিরাপদে লগইন করুন · আপনার তথ্য সুরক্ষিত রাখুন
+        </p>
+      </section>
+
+      <style jsx>{`
+        @keyframes fadeIn {
+          from {
+            opacity: 0;
+            transform: translateY(14px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
         }
-    };
-    return (
-        <section className="mx-auto flex min-h-[calc(100vh-8rem)] w-full items-center justify-center px-4 py-10 sm:py-16">
-                    <div className="w-full max-w-md rounded-2xl border border-gray-200 bg-white p-6 shadow-lg sm:p-8">
-                        <div className="mb-8 text-center">
-                            <h2 className="text-2xl font-bold text-[#C40004] sm:text-3xl">
-                                সাইন ইন
-                            </h2>
-                            <p className="mt-2 text-sm text-gray-500">
-                                নতুন অ্যাকাউন্ট তৈরি করতে তথ্য দিন
-                            </p>
-                        </div>
-        
-                        <Form
-                        className="flex w-full flex-col gap-5"
-                        onSubmit={onSubmit}
-                        >
-                        {/* Name */}
-                        <TextField
-                            isRequired
-                            name="name"
-                            className="w-full"
-                            validate={(value) =>
-                            value.trim().length < 3
-                                ? "নাম কমপক্ষে ৩ অক্ষরের হতে হবে"
-                                : null
-                            }
-                        >
-                            <Label>নাম</Label>
-                            <Input placeholder="আপনার নাম লিখুন" autoComplete="name" />
-                            <FieldError />
-                        </TextField>
-        
-                        {/* Email */}
-                        <TextField
-                            isRequired
-                            name="email"
-                            type="email"
-                            className="w-full"
-                            validate={(value) =>
-                            !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(value)
-                                ? "সঠিক ইমেইল ঠিকানা দিন"
-                                : null
-                            }
-                        >
-                            <Label>ইমেইল</Label>
-                            <Input placeholder="you@example.com" autoComplete="email" />
-                            <FieldError />
-                        </TextField>
-        
-                        {/* Password */}
-                        <TextField
-                            isRequired
-                            name="password"
-                            type={showPassword ? "text" : "password"}
-                            className="w-full"
-                            validate={(value) => {
-                            if (value.length < 8) return "পাসওয়ার্ড কমপক্ষে ৮ অক্ষরের হতে হবে";
-                            if (!/[A-Z]/.test(value))
-                                return "কমপক্ষে একটি বড় হাতের অক্ষর (A-Z) থাকতে হবে";
-                            if (!/[0-9]/.test(value)) return "কমপক্ষে একটি সংখ্যা থাকতে হবে";
-                            return null;
-                            }}
-                        >
-                            <Label>পাসওয়ার্ড</Label>
-                            <div className="relative">
-                            <Input
-                                placeholder="পাসওয়ার্ড লিখুন"
-                                autoComplete="new-password"
-                                className="w-full pr-16"
-                            />
-                            <button
-                                type="button"
-                                onClick={() => setShowPassword((s) => !s)}
-                                aria-label={showPassword ? "পাসওয়ার্ড লুকান" : "পাসওয়ার্ড দেখান"}
-                                className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-medium text-gray-500 hover:text-[#C40004]"
-                            >
-                                {showPassword ? "লুকান" : "দেখান"}
-                            </button>
-                            </div>
-                            <Description>
-                            কমপক্ষে ৮ অক্ষর, ১টি বড় হাতের অক্ষর ও ১টি সংখ্যা
-                            </Description>
-                            <FieldError />
-                        </TextField>
-        
-                        {/* Actions */}
-                        <div className="flex flex-col gap-2 sm:flex-row">
-                            <Button
-                            type="submit"
-                            className="w-full bg-[#C40004] text-white hover:bg-[#a90000] sm:flex-1"
-                            >
-                            <Check />
-                            সাইন ইন
-                            </Button>
-                            <Button type="reset" variant="secondary" className="w-full sm:w-auto">
-                            রিসেট
-                            </Button>
-                        </div>
-        
-                        <p className="text-center text-sm text-gray-500">
-                            আগেই অ্যাকাউন্ট না থাকলে?{" "}
-                            <a href="/signUp"className="font-semibold text-[#C40004] hover:underline">
-                            সাইন আপ করুন
-                            </a>
-                        </p>
-                        </Form>
-                        <button onClick={handleGoogleSignIn} className="btn">Google Sign-In</button>
-                        <button onClick={handleGithubSignIn} className="btn">Github Sign-In</button>
-                    </div>
-                </section>
-    );
+
+        @media (prefers-reduced-motion: reduce) {
+          section {
+            animation: none;
+          }
+        }
+      `}</style>
+    </main>
+  );
 }
