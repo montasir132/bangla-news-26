@@ -63,7 +63,7 @@ Readers can browse news by category (politics, world, economy, health, sports, t
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/<your-username>/bangla-news-26.git
+git clone https://github.com/montasir132/bangla-news-26.git
 cd bangla-news-26
 ```
 

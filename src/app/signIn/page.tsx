@@ -107,7 +107,7 @@ export default function SignInPage() {
         {/* Header */}
         <div className="mb-8 text-center">
           <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-[#C40004] text-2xl font-extrabold text-white shadow-lg shadow-red-200">
-            N
+            B
           </div>
 
           <h1 className="text-3xl font-extrabold tracking-tight text-slate-900">
